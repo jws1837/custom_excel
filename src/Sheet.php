@@ -436,7 +436,27 @@ class Sheet
     public function fromView(FromView $sheetExport, $sheetIndex = null)
     {
         $temporaryFile = $this->temporaryFileFactory->makeLocal(null, 'html');
-        $temporaryFile->put($sheetExport->view()->render());
+        $htmlString = $sheetExport->view()->render();
+        // DOMDocument 객체 생성
+        $dom = new \DOMDocument('1.0', 'UTF-8');
+        $dom->loadHTML('<?xml encoding="UTF-8">'.$htmlString);
+
+// DOMXPath 객체 생성
+        $xpath = new \DOMXPath($dom);
+
+// 모든 <a> 태그를 선택
+        $aTags = $xpath->query('//a');
+
+// 선택된 모든 <a> 태그에 대한 반복문
+        foreach ($aTags as $aTag) {
+            // <a> 태그 삭제
+            $aTag->parentNode->removeChild($aTag);
+        }
+        $dom->encoding = 'UTF-8';
+        $cleanedHtml  = $dom->saveHTML();
+
+        $temporaryFile->put($cleanedHtml);
+
         $spreadsheet = $this->worksheet->getParent();
 
         /** @var Html $reader */
