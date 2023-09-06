@@ -1,5 +1,5 @@
 {
-  "name": "custom/excel",
+  "name": "hello/excel",
   "description": "Supercharged Excel exports and imports in Laravel",
   "license": "MIT",
   "keywords": [
